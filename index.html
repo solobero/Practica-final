@@ -7,20 +7,27 @@
 		<script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
 	</head>
 	<body>
-		<header>
-			<h1 align="center">Juego de Ajedrez</h1>			
+		<header id="hola">
+			<font face="Fantasy,arial,verdana" size=6 >¡BIENVENIDO AL JUEGO DE AJEDREZ!</font>		
 		</header>	
 
 		<!--Creamos el campo dónde se ingresa la cadena a evaluar y el botón-->
-		<div id="FenInDiv">
-			Ingrese su movimiento:<br/>
+		<div id="FenInDiv" align="center">
+			<br>Ingrese su movimiento:<br/>
 			<input type="text" id="fenIn"/>		
 			<button type="button" id="SetFen">Posición FEN</button>	
 		</div>
+
+		<div id="final">
+			<p align="center">Proyecto Final - Lenguajes de Programación</p>
+		</div>
 		
 		<!--Creamos el tablero, matriz-->
-		<div id="board">
+		<div id="board"></div>
 
+		<div id="creditos" align="center">
+			<p>BY: Verónica Zapata Vargas y Juan Fernando Romero</p>
+			<p>Universidad EAFIT</p>
 		</div>
 
 		

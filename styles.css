@@ -1,6 +1,7 @@
 #FenInDiv{
-    position:relative;
-    left:60px;
+    margin:auto;
+    width: 50%;
+    padding:10px
 }
 
 #fenIn{
@@ -8,12 +9,36 @@
     left:60px;
 }
 
+#hola{
+    text-align:center;
+}
+
 #board{
     position:relative;
-    top:20px;
-    left:100px;
+    top:30px;
+    left:520px;
     width: 480px;
     height: 480px;
+    border-style:solid;
+    border-width:1px;
+}
+
+#final{
+    position:relative;
+    top:30px;
+    left:460px;
+    width: 600px;
+    height: 40px;
+    border-style:solid;
+    border-width:1px;
+}
+
+#creditos{
+    position:relative;
+    top:30px;
+    left:460px;
+    width: 600px;
+    height: 80px;
     border-style:solid;
     border-width:1px;
 }
