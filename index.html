@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<title>Proyecto Final</title>	
+		<link href="styles.css" rel="stylesheet" type="text/css">	
+		<script type="text/javascript"> if (!window.console) console = {log: function() {}}; </script>
+	</head>
+	<body>
+		<header>
+			<h1 align="center">Juego de Ajedrez</h1>			
+		</header>	
+
+		<!--Creamos el campo dónde se ingresa la cadena a evaluar y el botón-->
+		<div id="FenInDiv">
+			Ingrese su movimiento:<br/>
+			<input type="text" id="fenIn"/>		
+			<button type="button" id="SetFen">Posición FEN</button>	
+		</div>
+		
+		<!--Creamos el tablero, matriz-->
+		<div id="board">
+
+		</div>
+
+		
+		<script src="js/jquery-1.10.1.min.js"></script>		
+		<script src="js/defs.js"></script>		
+		<script src="js/board.js"></script>	
+		<script src="js/gui.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>
