@@ -1,45 +1,46 @@
 //Definimos la forma en como están representadas las fichas (blancas con Mayus y negras con Min)
 //Le agregamos a cada pieza un atributo entero que la representa en el tablero
 
-var PIECES =  { EMPTY : 0, wP : 1, wN : 2, wB : 3,wR : 4, wQ : 5, wK : 6, 
+var PIEZAS =  { VACIO : 0, wP : 1, wN : 2, wB : 3,wR : 4, wQ : 5, wK : 6, 
               bP : 7, bN : 8, bB : 9, bR : 10, bQ : 11, bK : 12  };
               
-var BRD_SQ_NUM = 120;
+var TABLERO_SQ_NUM = 120;
 
-var FILES =  { FILE_A:0, FILE_B:1, FILE_C:2, FILE_D:3, 
-	FILE_E:4, FILE_F:5, FILE_G:6, FILE_H:7, FILE_NONE:8 };
+var FILAS =  { FILA_A:0, FILA_B:1, FILA_C:2, FILA_D:3, 
+	FILA_E:4, FILA_F:5, FILA_G:6, FILA_H:7, FILA_NONE:8 };
 	
-var RANKS =  { RANK_1:0, RANK_2:1, RANK_3:2, RANK_4:3, 
-	RANK_5:4, RANK_6:5, RANK_7:6, RANK_8:7, RANK_NONE:8 };
+var RANGOS =  { RANGO_1:0, RANGO_2:1, RANGO_3:2, RANGO_4:3, 
+	RANGO_5:4, RANGO_6:5, RANGO_7:6, RANGO_8:7, RANGO_NONE:8 };
 	
-var COLOURS = { WHITE:0, BLACK:1, BOTH:2 };
+var COLORES = { WHITE:0, BLACK:1, BOTH:2 };
 
 var CASTLEBIT = { WKCA : 1, WQCA : 2, BKCA : 4, BQCA : 8 };
 
-var SQUARES = {
+var CUADRADOS = {
   A1:21, B1:22, C1:23, D1:24, E1:25, F1:26, G1:27, H1:28,  
   A8:91, B8:92, C8:93, D8:94, E8:95, F8:96, G8:97, H8:98, 
-  NO_SQ:99, OFFBOARD:100
+  NO_SQ:99, FUERADE:100
 };
 
 var BOOL = { FALSE:0, TRUE:1 };
 
 //Definimos el máximo de movimientos que puede tener un juego de ajedrez
-var MAXGAMEMOVES = 2048;
-var MAXPOSITIONMOVES = 256;
-var MAXDEPTH = 64;
+var MAXIMOJUEGO = 2048;
+var MAXIMOMOVIM = 256;
+var MAXIMOTAB = 64;
 
-//Vamos a definir un array que nos permita representar el tablero, luego, una función dónde cada numero entre 120 nos retorna una casilla
-var FilesBrd = new Array(BRD_SQ_NUM);
-var RanksBrd = new Array(BRD_SQ_NUM);
+//Vamos a definir un array que nos permita representar el tablero
+var FilasTab = new Array(TABLERO_SQ_NUM);
+var RangoTab = new Array(TABLERO_SQ_NUM);
 
 //Posiciones iniciales con el FEN, y rangos y filas iniciales
-var START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+var INICIO_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 var PceChar = ".PNBRQKpnbrqk";
-var SideChar = "wb-";
-var RankChar = "12345678";
-var FileChar = "abcdefgh";
+var LadoChar = "wb-";
+var RangoChar = "12345678";
+var FilaChar = "abcdefgh";
 
+//una función dónde cada numero entre 120 nos retorna una casilla
 function FR2SQ(f,r) {
  	return ( (21 + (f) ) + ( (r) * 10 ) );
 }
@@ -49,8 +50,8 @@ var PieceBig = [ BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE, BOOL.T
 var PieceMaj = [ BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE ];
 var PieceMin = [ BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE ];
 var PieceVal= [ 0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000  ];
-var PieceCol = [ COLOURS.BOTH, COLOURS.WHITE, COLOURS.WHITE, COLOURS.WHITE, COLOURS.WHITE, COLOURS.WHITE, COLOURS.WHITE,
-	COLOURS.BLACK, COLOURS.BLACK, COLOURS.BLACK, COLOURS.BLACK, COLOURS.BLACK, COLOURS.BLACK ];
+var PieceCol = [ COLORES.BOTH, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE,
+	COLORES.BLACK, COLORES.BLACK, COLORES.BLACK, COLORES.BLACK, COLORES.BLACK, COLORES.BLACK ];
 	
 var PiecePawn = [ BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE ];	
 var PieceKnight = [ BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE ];
@@ -63,7 +64,7 @@ var PieceKeys = new Array(14 * 120);
 var SideKey;
 var CastleKeys = new Array(16);
 
-var Sq120ToSq64 = new Array(BRD_SQ_NUM);
+var Sq120ToSq64 = new Array(TABLERO_SQ_NUM);
 var Sq64ToSq120 = new Array(64);
 
 //Vamos a crear una función que nos llena 32bits que necesitamos
