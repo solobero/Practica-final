@@ -6,17 +6,24 @@ var GameBoard = {};
 
 GameBoard.pieces = new Array(TABLERO_SQ_NUM);
 GameBoard.side = COLORES.WHITE;
-GameBoard.enPas = 0;
-GameBoard.castlePerm = 0;
+GameBoard.castlePerm = 0; //Guarda el valor de la linea donde pasa alguna de las 4 opciones de enroque
 GameBoard.material = new Array(2); // Definir un arreglo de blancas y negras
 GameBoard.pceNum = new Array(13); //Definir arreglo de enteros que representan las 13 piezas, siendo la 13 vacio
-GameBoard.pList = new Array(14 * 10); // Arreglo de piezas
-GameBoard.posKey = 0;
-
-//Nos ayudará a manejar las piezas o imagenes de las mismas
+GameBoard.pList = new Array(14 * 10); // Los cuadrados en los cuales está cada una de las piezas posibles del tablero
+GameBoard.posKey = 0; //Número que representa la posición en el tablero (único)
+ 
+//Función para inicializar el tablero, definimos los "cuadrados"
 function PrintBoard() {
-	
+
 	var sq,file,rank,piece;
+	
+	/* 
+	a8 b8 c8 d8 e8 f8 g8 h8
+	a7 b7 c7 d7 e7 f7 g7 h7
+	a6 b6 c6 d6 e6 f6 g6 h6
+	.......................
+	*/
+
 	for(rank = RANGOS.RANGO_8; rank >= RANGOS.RANGO_1; rank--) {
 		var line =(RangoChar[rank] + "  ");
 		for(file = FILAS.FILA_A; file <= FILAS.FILA_H; file++) {
@@ -37,7 +44,7 @@ function PrintBoard() {
 	if(GameBoard.castlePerm & CASTLEBIT.BQCA) line += 'q';
 }
 
-
+//Función para "pasar" un número de cuadrado aleatorio a un número de cuadrado en el tablero
 function GeneratePosKey() {
 
 	var sq = 0;
@@ -50,17 +57,8 @@ function GeneratePosKey() {
 			finalKey ^= PieceKeys[(piece * 120) + sq];
 		}		
 	}
-
-	if(GameBoard.side == COLORES.WHITE) {
-		finalKey ^= SideKey;
-	}
 	
-	if(GameBoard.enPas != CUADRADOS.NO_SQ) {		
-		finalKey ^= PieceKeys[GameBoard.enPas];
-	}
-	
-	finalKey ^= CastleKeys[GameBoard.castlePerm];
-	
+	finalKey ^= CastleKeys[GameBoard.castlePerm]; //Generamos una llave para el enroque
 	return finalKey;
 
 }
@@ -92,8 +90,6 @@ function ResetBoard() {
 
 	//Borramos reiniciando todo lo que pudo haberse pintado en el tablero
 	GameBoard.side = COLORES.BOTH;
-	GameBoard.enPas = CUADRADOS.NO_SQ;
-	GameBoard.ply = 0;
 	GameBoard.castlePerm = 0;	
 	GameBoard.posKey = 0;
 	
@@ -111,7 +107,7 @@ function ParseFen(fen) {
     var count = 0;
     var i = 0;  
 	var sq120 = 0;
-	var fenCnt = 0; // fen[fenCnt]
+	var fenCnt = 0; // fen[fenCnt] se incrementa cada que se lee un caracter de la expresión fen a procesar
 	
 	//Recorremos el array de piezas y definimos el tipo de cadena a recibir, tomando en cuenta los errores
 	while ((rank >= RANGOS.RANGO_1) && fenCnt < fen.length) {
@@ -149,18 +145,21 @@ function ParseFen(fen) {
                 fenCnt++;
                 continue;  
             default:
-                console.log("FEN error");
+				window.alert("FEN error, por favor verifique");
+				location. reload()
                 return;
 
 		}
 		
+
+		//Emparejamos el array de piezas con el tablero teniendo en cuenta los números que arroje la función
 		for (i = 0; i < count; i++) {	
 			sq120 = FR2SQ(file,rank);            
             GameBoard.pieces[sq120] = piece;
 			file++;
         }
 		fenCnt++;
-	} // while loop end
+	} 
 	
 	//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 	GameBoard.side = (fen[fenCnt] == 'w') ? COLORES.WHITE : COLORES.BLACK;
@@ -183,12 +182,8 @@ function ParseFen(fen) {
 	
 	if (fen[fenCnt] != '-') {        
 		file = fen[fenCnt].charCodeAt() - 'a'.charCodeAt();
-		rank = fen[fenCnt + 1].charCodeAt() - '1'.charCodeAt();	
-		console.log("fen[fenCnt]:" + fen[fenCnt] + " File:" + file + " Rank:" + rank);	
-		GameBoard.enPas = FR2SQ(file,rank);		
+		rank = fen[fenCnt + 1].charCodeAt() - '1'.charCodeAt();		
     }
 	
-	GameBoard.posKey = GeneratePosKey();
-	
-	
+	GameBoard.posKey = GeneratePosKey();	
 }

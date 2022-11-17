@@ -1,0 +1,4 @@
+PieceBig= noimporta jaja
+MajorPiece=reina o torre
+Minpiece=alfil o caballo
+

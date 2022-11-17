@@ -24,11 +24,6 @@ var CUADRADOS = {
 
 var BOOL = { FALSE:0, TRUE:1 };
 
-//Definimos el máximo de movimientos que puede tener un juego de ajedrez
-var MAXIMOJUEGO = 2048;
-var MAXIMOMOVIM = 256;
-var MAXIMOTAB = 64;
-
 //Vamos a definir un array que nos permita representar el tablero
 var FilasTab = new Array(TABLERO_SQ_NUM);
 var RangoTab = new Array(TABLERO_SQ_NUM);
@@ -53,6 +48,7 @@ var PieceVal= [ 0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50
 var PieceCol = [ COLORES.BOTH, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE, COLORES.WHITE,
 	COLORES.BLACK, COLORES.BLACK, COLORES.BLACK, COLORES.BLACK, COLORES.BLACK, COLORES.BLACK ];
 	
+//Representación de 0's y 1's de cada pieza en el tablero y los movimientos de estos
 var PiecePawn = [ BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE ];	
 var PieceKnight = [ BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE ];
 var PieceKing = [ BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE ];
@@ -60,14 +56,16 @@ var PieceRookQueen = [ BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE
 var PieceBishopQueen = [ BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE, BOOL.TRUE, BOOL.FALSE ];
 var PieceSlides = [ BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE, BOOL.FALSE, BOOL.FALSE, BOOL.TRUE, BOOL.TRUE, BOOL.TRUE, BOOL.FALSE ];
 
+//Definimos de nuevo números aleatorios para cada pieza
 var PieceKeys = new Array(14 * 120);
-var SideKey;
 var CastleKeys = new Array(16);
 
+//Variables que, dado "fuerade" o "dentrode" nos permite convertirlo al otro
 var Sq120ToSq64 = new Array(TABLERO_SQ_NUM);
 var Sq64ToSq120 = new Array(64);
 
-//Vamos a crear una función que nos llena 32bits que necesitamos
+//Vamos a crear una función que nos llena 32bits, dando 4 numeros aleatorios que llenan 8bits
+//cada número va a representar la posición de una ficha luego en "poskey", al ser aleatorios se asegura que sea único
 function RAND_32() {
 
 	return (Math.floor((Math.random()*255)+1) << 23) | (Math.floor((Math.random()*255)+1) << 16)
@@ -75,10 +73,12 @@ function RAND_32() {
 
 }
 
+//Retorno de la casilla en 64
 function SQ64(sq120) { 
 	return Sq120ToSq64[(sq120)];
 }
 
+//Retorno de la casilla en 120
 function SQ120(sq64) {
 	return Sq64ToSq120[(sq64)];
 }
